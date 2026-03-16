@@ -1,0 +1,434 @@
+[
+  {
+    "id": 2,
+    "type": "imagen",
+    "payload": "{\"prompt\": \"una modelo con vestido rojo\"}",
+    "status": "completed",
+    "image_path": null,
+    "created_at": "2026-02-28 15:50:16",
+    "completed_at": "2026-02-28 15:50:22"
+  },
+  {
+    "id": 3,
+    "type": "imagen",
+    "payload": "{\"prompt\": \"una modelo con vestido negro\"}",
+    "status": "completed",
+    "image_path": null,
+    "created_at": "2026-02-28 16:03:51",
+    "completed_at": "2026-02-28 16:03:57"
+  },
+  {
+    "id": 4,
+    "type": "imagen",
+    "payload": "{\"prompt\": \"una modelo con vestido azul\"}",
+    "status": "completed",
+    "image_path": null,
+    "created_at": "2026-02-28 16:41:19",
+    "completed_at": "2026-02-28 16:41:25"
+  },
+  {
+    "id": 5,
+    "type": "imagen",
+    "payload": "{\"prompt\": \"una modelo con vestido verde\"}",
+    "status": "completed",
+    "image_path": null,
+    "created_at": "2026-02-28 16:45:21",
+    "completed_at": "2026-02-28 16:45:32"
+  },
+  {
+    "id": 6,
+    "type": "imagen",
+    "payload": "{\"prompt\": \"una modelo con vestido amarillo\"}",
+    "status": "completed",
+    "image_path": null,
+    "created_at": "2026-02-28 16:46:45",
+    "completed_at": "2026-02-28 16:46:52"
+  },
+  {
+    "id": 7,
+    "type": "imagen",
+    "payload": "{\"prompt\": \"una modelo con vestido blanco\"}",
+    "status": "completed",
+    "image_path": null,
+    "created_at": "2026-02-28 16:47:08",
+    "completed_at": "2026-02-28 16:48:07"
+  },
+  {
+    "id": 8,
+    "type": "imagen",
+    "payload": "{\"prompt\": \"dibujar una chica guapa en su coche de carreras\"}",
+    "status": "completed",
+    "image_path": null,
+    "created_at": "2026-02-28 16:56:09",
+    "completed_at": "2026-02-28 16:57:11"
+  },
+  {
+    "id": 9,
+    "type": "imagen",
+    "payload": "{\"prompt\": \"una chica en moto\"}",
+    "status": "completed",
+    "image_path": null,
+    "created_at": "2026-02-28 17:36:08",
+    "completed_at": "2026-02-28 17:36:28"
+  },
+  {
+    "id": 10,
+    "type": "imagen",
+    "payload": "{\"prompt\": \"una mujer guapa en coche\"}",
+    "status": "completed",
+    "image_path": null,
+    "created_at": "2026-02-28 19:23:43",
+    "completed_at": "2026-02-28 19:25:16"
+  },
+  {
+    "id": 11,
+    "type": "imagen",
+    "payload": "{\"prompt\": \"una mujer muy guapa manejando una motocicleta\"}",
+    "status": "completed",
+    "image_path": null,
+    "created_at": "2026-02-28 19:41:33",
+    "completed_at": "2026-02-28 19:45:31"
+  },
+  {
+    "id": 12,
+    "type": "imagen",
+    "payload": "{\"prompt\": \"mujer muy guapa en un traje de gala\"}",
+    "status": "completed",
+    "image_path": null,
+    "created_at": "2026-02-28 19:47:32",
+    "completed_at": "2026-02-28 20:03:42"
+  },
+  {
+    "id": 13,
+    "type": "imagen",
+    "payload": "{\"prompt\": \"una mujer muy guapa en traje veraniego\"}",
+    "status": "completed",
+    "image_path": null,
+    "created_at": "2026-02-28 19:52:59",
+    "completed_at": "2026-02-28 20:04:12"
+  },
+  {
+    "id": 14,
+    "type": "imagen",
+    "payload": "{\"prompt\": \"chica guapa tomando cafe\"}",
+    "status": "completed",
+    "image_path": null,
+    "created_at": "2026-02-28 20:14:41",
+    "completed_at": "2026-02-28 20:16:26"
+  },
+  {
+    "id": 15,
+    "type": "imagen",
+    "payload": "{\"prompt\": \"una chica guapa jugando voleibol\"}",
+    "status": "completed",
+    "image_path": null,
+    "created_at": "2026-02-28 20:41:51",
+    "completed_at": "2026-02-28 20:44:52"
+  },
+  {
+    "id": 16,
+    "type": "imagen",
+    "payload": "{\"prompt\": \"una mujer practicando karate cuerpo completo\"}",
+    "status": "completed",
+    "image_path": null,
+    "created_at": "2026-02-28 20:48:48",
+    "completed_at": "2026-02-28 20:51:02"
+  },
+  {
+    "id": 17,
+    "type": "imagen",
+    "payload": "{\"prompt\": \"otra mujer guapa pintando un cuadro\"}",
+    "status": "completed",
+    "image_path": null,
+    "created_at": "2026-02-28 20:49:03",
+    "completed_at": "2026-02-28 20:59:06"
+  },
+  {
+    "id": 18,
+    "type": "imagen",
+    "payload": "{\"prompt\": \"muujer guapa jugando nintendo\"}",
+    "status": "completed",
+    "image_path": "zimage1__01246_.png",
+    "created_at": "2026-02-28 21:14:30",
+    "completed_at": "2026-02-28 21:27:34"
+  },
+  {
+    "id": 19,
+    "type": "imagen",
+    "payload": "{\"prompt\": \"una mujer guapa programando en un super ordenador.\"}",
+    "status": "failed",
+    "image_path": null,
+    "created_at": "2026-03-01 07:21:40",
+    "completed_at": "2026-03-01 07:36:17"
+  },
+  {
+    "id": 20,
+    "type": "imagen",
+    "payload": "{\"prompt\": \" una mujer guapa programando en un super ordenador.\"}",
+    "status": "completed",
+    "image_path": "zimage1__01247_.png",
+    "created_at": "2026-03-01 07:42:34",
+    "completed_at": "2026-03-01 07:45:07"
+  },
+  {
+    "id": 21,
+    "type": "video",
+    "payload": "{\"prompt\": \"realista\"}",
+    "status": "failed",
+    "image_path": null,
+    "created_at": "2026-03-01 12:10:17",
+    "completed_at": "2026-03-01 12:24:55"
+  },
+  {
+    "id": 22,
+    "type": "video",
+    "payload": "{\"prompt\": \"realista\"}",
+    "status": "completed",
+    "image_path": "ltx2_00006-audio.mp4",
+    "created_at": "2026-03-01 12:28:28",
+    "completed_at": "2026-03-01 12:29:05"
+  },
+  {
+    "id": 23,
+    "type": "video",
+    "payload": "{\"prompt\": \"realista\"}",
+    "status": "failed",
+    "image_path": null,
+    "created_at": "2026-03-01 12:45:01",
+    "completed_at": "2026-03-04 20:20:43"
+  },
+  {
+    "id": 24,
+    "type": "video",
+    "payload": "{\"prompt\": \"realista\"}",
+    "status": "completed",
+    "image_path": "ltx2_00006-audio.mp4",
+    "created_at": "2026-03-01 13:31:15",
+    "completed_at": "2026-03-01 13:32:07"
+  },
+  {
+    "id": 25,
+    "type": "imagen",
+    "payload": "{\"prompt\": \"Mujer guapa con el witcher de la serie, estan en el bosque muy realista.\"}",
+    "status": "failed",
+    "image_path": null,
+    "created_at": "2026-03-03 22:27:32",
+    "completed_at": "2026-03-03 22:28:51"
+  },
+  {
+    "id": 26,
+    "type": "imagen",
+    "payload": "{\"prompt\": \"Mujer muy guapa en el bosque con el witcher de la serie de netflix, \"}",
+    "status": "completed",
+    "image_path": "zimage1__01248_.png",
+    "created_at": "2026-03-03 22:30:31",
+    "completed_at": "2026-03-03 22:31:59"
+  },
+  {
+    "id": 27,
+    "type": "video",
+    "payload": "{\"prompt\": \"animacion fluida\"}",
+    "status": "failed",
+    "image_path": null,
+    "created_at": "2026-03-03 22:45:32",
+    "completed_at": "2026-03-03 22:46:06"
+  },
+  {
+    "id": 28,
+    "type": "imagen",
+    "payload": "{\"prompt\": \"Mujer gauapa en el vosque con el witcher de la serie netflix\"}",
+    "status": "failed",
+    "image_path": null,
+    "created_at": "2026-03-03 22:54:27",
+    "completed_at": "2026-03-03 22:54:50"
+  },
+  {
+    "id": 29,
+    "type": "imagen",
+    "payload": "{\"prompt\": \"Mujer gauapa en el vosque con el witcher de la serie netflix\"}",
+    "status": "completed",
+    "image_path": "zimage1__01249_.png",
+    "created_at": "2026-03-03 22:56:15",
+    "completed_at": "2026-03-03 22:56:50"
+  },
+  {
+    "id": 30,
+    "type": "video",
+    "payload": "{\"prompt\": \"video muy realista\"}",
+    "status": "failed",
+    "image_path": null,
+    "created_at": "2026-03-03 23:00:11",
+    "completed_at": "2026-03-03 23:00:46"
+  },
+  {
+    "id": 31,
+    "type": "video",
+    "payload": "{\"prompt\": \"muy realista, mira a la camara y saca la espada.\"}",
+    "status": "completed",
+    "image_path": "ltx2_00006-audio.mp4",
+    "created_at": "2026-03-04 19:23:22",
+    "completed_at": "2026-03-04 19:24:17"
+  },
+  {
+    "id": 32,
+    "type": "video",
+    "payload": "{\"prompt\": \"muy realista, mira a la camara y saca la espada.\"}",
+    "status": "failed",
+    "image_path": null,
+    "created_at": "2026-03-04 20:05:05",
+    "completed_at": "2026-03-04 20:06:17"
+  },
+  {
+    "id": 33,
+    "type": "video",
+    "payload": "{\"prompt\": \"video de prueba\"}",
+    "status": "failed",
+    "image_path": null,
+    "created_at": "2026-03-04 20:10:04",
+    "completed_at": "2026-03-04 20:31:20"
+  },
+  {
+    "id": 34,
+    "type": "video",
+    "payload": "{\"prompt\": \"muy realista, mira a la camara y saca la espada.\"}",
+    "status": "failed",
+    "image_path": null,
+    "created_at": "2026-03-04 20:36:45",
+    "completed_at": "2026-03-04 20:37:18"
+  },
+  {
+    "id": 35,
+    "type": "imagen",
+    "payload": "{\"prompt\": \"Mujer gauapa en el Bosque con el witcher de la serie netflix\"}",
+    "status": "completed",
+    "image_path": "zimage1__01250_.png",
+    "created_at": "2026-03-04 20:47:10",
+    "completed_at": "2026-03-04 20:48:11"
+  },
+  {
+    "id": 36,
+    "type": "video",
+    "payload": "{\"prompt\": \"la mujer saca la espada y mira a la camara, da un giro y guarda la espada\"}",
+    "status": "completed",
+    "image_path": "Wan2.2-KJ_00001.mp4",
+    "created_at": "2026-03-05 14:46:10",
+    "completed_at": "2026-03-05 14:46:59"
+  },
+  {
+    "id": 37,
+    "type": "imagen",
+    "payload": "{\"prompt\": \"la mujer saca la espada y mira a la camara, da un giro y guarda la espada\"}",
+    "status": "completed",
+    "image_path": "zimage1__01250_.png",
+    "created_at": "2026-03-05 22:26:00",
+    "completed_at": "2026-03-05 22:27:55"
+  },
+  {
+    "id": 38,
+    "type": "video",
+    "payload": "{\"prompt\": \"la mujer saca la espada de la espalda y mira la camara\"}",
+    "status": "completed",
+    "image_path": "Wan2.2-KJ_00001.mp4",
+    "created_at": "2026-03-05 22:30:20",
+    "completed_at": "2026-03-05 22:32:06"
+  },
+  {
+    "id": 39,
+    "type": "imagen",
+    "payload": "{\"prompt\": \"Mujer gauapa en el Bosque con el witcher de la serie netflix\"}",
+    "status": "completed",
+    "image_path": "zimage1__01250_.png",
+    "created_at": "2026-03-06 16:48:23",
+    "completed_at": "2026-03-06 16:48:56"
+  },
+  {
+    "id": 40,
+    "type": "imagen",
+    "payload": "{\"prompt\": \"mujer guapa programando openclaw\"}",
+    "status": "completed",
+    "image_path": "zimage1__01251_.png",
+    "created_at": "2026-03-07 20:35:59",
+    "completed_at": "2026-03-07 21:12:14"
+  },
+  {
+    "id": 41,
+    "type": "imagen",
+    "payload": "{\"prompt\": \"mujer guapa tocando piano de cola\"}",
+    "status": "completed",
+    "image_path": "zimage1__01252_.png",
+    "created_at": "2026-03-09 18:49:16",
+    "completed_at": "2026-03-09 18:50:50"
+  },
+  {
+    "id": 42,
+    "type": "imagen",
+    "payload": "{\"prompt\": \"mujer guapa tocando piano de cola\"}",
+    "status": "completed",
+    "image_path": "zimage1__01253_.png",
+    "created_at": "2026-03-09 19:50:58",
+    "completed_at": "2026-03-09 19:52:00"
+  },
+  {
+    "id": 43,
+    "type": "video",
+    "payload": "{\"prompt\": \"genera un video muy realista con la imagen de la mujer tocando el piano de cola\"}",
+    "status": "failed",
+    "image_path": null,
+    "created_at": "2026-03-09 19:53:06",
+    "completed_at": "2026-03-09 19:54:06"
+  },
+  {
+    "id": 44,
+    "type": "video",
+    "payload": "{\"prompt\": \"muy realista tocando el piano con delicadesa\"}",
+    "status": "failed",
+    "image_path": null,
+    "created_at": "2026-03-09 20:21:01",
+    "completed_at": "2026-03-09 20:22:09"
+  },
+  {
+    "id": 45,
+    "type": "imagen",
+    "payload": "{\"prompt\": \"mujer guapa tocando el violin\"}",
+    "status": "completed",
+    "image_path": "zimage1__01254_.png",
+    "created_at": "2026-03-09 20:41:39",
+    "completed_at": "2026-03-09 20:43:57"
+  },
+  {
+    "id": 46,
+    "type": "video",
+    "payload": "{\"prompt\": \"muy realista la mujer mira a la camara\"}",
+    "status": "completed",
+    "image_path": "Wan2.2-KJ_00003.mp4",
+    "created_at": "2026-03-09 20:44:24",
+    "completed_at": "2026-03-09 21:17:07"
+  },
+  {
+    "id": 47,
+    "type": "imagen",
+    "payload": "{\"prompt\": \"[FRAME_FROM_VIDEO:Wan2.2-KJ_00003.png]\"}",
+    "status": "completed",
+    "image_path": "Wan2.2-KJ_00003.png",
+    "created_at": "2026-03-09 21:17:07",
+    "completed_at": null
+  },
+  {
+    "id": 48,
+    "type": "imagen",
+    "payload": "{\"prompt\": \"Mujer guapa con un vestido de gala. Tocando un piano de cola en un concierto\"}",
+    "status": "completed",
+    "image_path": "zimage1__01255_.png",
+    "created_at": "2026-03-09 21:20:29",
+    "completed_at": "2026-03-09 21:21:43"
+  },
+  {
+    "id": 49,
+    "type": "imagen",
+    "payload": "{\"prompt\": \"Una mujer guapa con un vestido de gala. Tocando un piano de cola. Y est\\u00e1 en un concierto. Con mucho p\\u00fablico.\"}",
+    "status": "completed",
+    "image_path": "zimage1__01256_.png",
+    "created_at": "2026-03-09 21:23:46",
+    "completed_at": "2026-03-09 21:25:06"
+  }
+]

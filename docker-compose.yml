@@ -1,0 +1,97 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: comfyui-postgres
+    environment:
+      POSTGRES_USER: comfyui
+      POSTGRES_PASSWORD: comfyui_password
+      POSTGRES_DB: comfyui_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - comfyui-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U comfyui"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: comfyui-redis
+    networks:
+      - comfyui-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: comfyui-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://comfyui:comfyui_password@postgres:5432/comfyui_db
+      - REDIS_URL=redis://redis:6379
+      - COMFYUI_WORKER_URL=http://worker:8188
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - comfyui-network
+    volumes:
+      - ./backend:/app
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: comfyui-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+      - NEXT_PUBLIC_SOCKET_URL=http://localhost:8000
+    depends_on:
+      - backend
+    networks:
+      - comfyui-network
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+  worker:
+    build:
+      context: ./worker
+      dockerfile: Dockerfile
+    container_name: comfyui-worker
+    ports:
+      - "8188:8188"
+    environment:
+      - COMFYUI_PORT=8188
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql+asyncpg://comfyui:comfyui_password@postgres:5432/comfyui_db
+    depends_on:
+      - redis
+      - postgres
+    networks:
+      - comfyui-network
+    volumes:
+      - ./worker:/app
+      - comfyui_models:/models
+
+networks:
+  comfyui-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  comfyui_models:

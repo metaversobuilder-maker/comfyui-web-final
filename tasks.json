@@ -1,0 +1,203 @@
+{
+  "planes": [
+    {
+      "id": "plan-001",
+      "nombre": "Migración ComfyUI Web",
+      "descripcion": "Actualizar la webapp Flask a arquitectura moderna Next.js + FastAPI + PostgreSQL",
+      "estado": "en_progreso",
+      "fecha_creado": "2026-03-09",
+      "tareas": [
+        {
+          "id": "task-001",
+          "titulo": "Docker Setup",
+          "descripcion": "Crear docker-compose con PostgreSQL, Redis, Backend, Frontend, Worker",
+          "estado": "completada",
+          "asignado": "Codex",
+          "fecha_completado": "2026-03-09",
+          "notas": "5 servicios configurados"
+        },
+        {
+          "id": "task-002",
+          "titulo": "Backend FastAPI",
+          "descripcion": "Crear API REST con endpoints para jobs, stats, WebSocket",
+          "estado": "completada",
+          "asignado": "Codex",
+          "progreso": 100,
+          "notas": "Backend funcionando con SQLite",
+          "fecha_completado": "2026-03-09"
+        },
+        {
+          "id": "task-003",
+          "titulo": "Frontend Next.js",
+          "descripcion": "Crear dashboard con Tailwind, formularios, miniaturas, WebSocket",
+          "estado": "en_proceso",
+          "asignado": "Codex",
+          "progreso": 60,
+          "notas": "API alignneada con backend"
+        },
+        {
+          "id": "task-004",
+          "titulo": "Migrar datos SQLite → PostgreSQL",
+          "descripcion": "Exportar jobs existentes a la nueva DB",
+          "estado": "completada",
+          "asignado": "MiniMax",
+          "notas": "Migrados 96 jobs (60 imagenes, 12 videos)",
+          "progreso": 100,
+          "fecha_completado": "2026-03-09"
+        },
+        {
+          "id": "task-005",
+          "titulo": "Worker refactorizado",
+          "descripcion": "Actualizar worker para nueva API + manejo de videos",
+          "estado": "completada",
+          "asignado": null,
+          "notas": "Worker conecta con nueva API",
+          "progreso": 100,
+          "fecha_completado": "2026-03-09"
+        },
+        {
+          "id": "task-006",
+          "titulo": "Despliegue local",
+          "descripcion": "Probar todo junto con docker-compose",
+          "estado": "completada",
+          "asignado": null,
+          "notas": "Todo corriendo: Frontend 3000, Backend 8000, Worker activo",
+          "progreso": 100,
+          "fecha_completado": "2026-03-09"
+        }
+      ]
+    }
+  ],
+  "backlog": [
+    {
+      "id": "backlog-001",
+      "titulo": "Integración ComfyUI API",
+      "descripcion": "Conectar worker con ComfyUI para generación de imágenes/videos",
+      "prioridad": "alta",
+      "fecha_propuesto": "2026-03-09"
+    },
+    {
+      "id": "backlog-002",
+      "titulo": "Autenticación usuarios",
+      "descripcion": "Sistema de login con JWT",
+      "prioridad": "media",
+      "fecha_propuesto": "2026-03-09"
+    },
+    {
+      "id": "backlog-003",
+      "titulo": "Historial por usuario",
+      "descripcion": "Cada usuario ve sus propias generaciones",
+      "prioridad": "media",
+      "fecha_propuesto": "2026-03-09"
+    },
+    {
+      "id": "backlog-004",
+      "titulo": "Gallery pública",
+      "descripcion": "Galería de imágenes generadas compartibles",
+      "prioridad": "baja",
+      "fecha_propuesto": "2026-03-09"
+    },
+    {
+      "id": "backlog-005",
+      "titulo": "Export Discord/Telegram",
+      "descripcion": "Enviar resultados a redes sociales",
+      "prioridad": "baja",
+      "fecha_propuesto": "2026-03-09"
+    },
+    {
+      "id": "backlog-006",
+      "titulo": "Métricas avanzadas",
+      "descripcion": "Analytics de uso, tiempos, errores",
+      "prioridad": "baja",
+      "fecha_propuesto": "2026-03-09"
+    },
+    {
+      "id": "backlog-007",
+      "titulo": "Colas con prioridades",
+      "descripcion": "Jobs urgent vs normal",
+      "prioridad": "media",
+      "fecha_propuesto": "2026-03-09"
+    },
+    {
+      "id": "backlog-008",
+      "titulo": "Notificaciones push",
+      "descripcion": "Avisar cuando termina un job",
+      "prioridad": "baja",
+      "fecha_propuesto": "2026-03-09"
+    }
+  ],
+  "registro": [
+    {
+      "timestamp": "2026-03-09T22:45:00",
+      "accion": "inicio_proyecto",
+      "descripcion": "Se inicia migración a nueva arquitectura",
+      "usuario": "Rey Ag"
+    },
+    {
+      "timestamp": "2026-03-09T22:51:00",
+      "accion": "task_completada",
+      "descripcion": "Docker setup completado",
+      "usuario": "Codex"
+    },
+    {
+      "timestamp": "2026-03-09T22:55:00",
+      "accion": "tarea_asignada",
+      "descripcion": "Backend FastAPI asignado a Codex",
+      "usuario": "MiniMax"
+    },
+    {
+      "timestamp": "2026-03-09T22:55:00",
+      "accion": "tarea_asignada",
+      "descripcion": "Frontend Next.js asignado a Codex",
+      "usuario": "MiniMax"
+    },
+    {
+      "timestamp": "2026-03-09T23:17:37.079762",
+      "accion": "progreso",
+      "descripcion": "Tarea task-002: 60% - API routes completadas",
+      "usuario": "Sistema"
+    },
+    {
+      "timestamp": "2026-03-09T23:23:03.557773",
+      "accion": "progreso",
+      "descripcion": "Tarea task-002: 80% - Modelos y schemas completados",
+      "usuario": "Sistema"
+    },
+    {
+      "timestamp": "2026-03-09T23:26:17.065439",
+      "accion": "progreso",
+      "descripcion": "Tarea task-003: 60% - API alignneada con backend",
+      "usuario": "Sistema"
+    },
+    {
+      "timestamp": "2026-03-09T23:47:38.084251",
+      "accion": "progreso",
+      "descripcion": "Tarea task-002: 100% - Backend funcionando con SQLite",
+      "usuario": "Sistema"
+    },
+    {
+      "timestamp": "2026-03-09T23:51:24.387353",
+      "accion": "progreso",
+      "descripcion": "Tarea task-004: 100% - Migrados 96 jobs (60 imagenes, 12 videos)",
+      "usuario": "Sistema"
+    },
+    {
+      "timestamp": "2026-03-09T23:56:10.482514",
+      "accion": "progreso",
+      "descripcion": "Tarea task-005: 100% - Worker configurado para nueva API",
+      "usuario": "Sistema"
+    },
+    {
+      "timestamp": "2026-03-09T23:56:46.739510",
+      "accion": "progreso",
+      "descripcion": "Tarea task-005: 100% - Worker conecta con nueva API",
+      "usuario": "Sistema"
+    },
+    {
+      "timestamp": "2026-03-09T23:56:56.057875",
+      "accion": "progreso",
+      "descripcion": "Tarea task-006: 100% - Todo corriendo: Frontend 3000, Backend 8000, Worker activo",
+      "usuario": "Sistema"
+    }
+  ]
+}
