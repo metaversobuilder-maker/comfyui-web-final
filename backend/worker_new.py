@@ -171,6 +171,9 @@ def get_latest_output_file(file_type, since_time):
     if os.path.exists(VIDEO_OUTPUT_DIR):
         dirs_to_check.append(VIDEO_OUTPUT_DIR)
     
+    latest_file = None
+    latest_mtime = 0
+    
     for output_dir in dirs_to_check:
         if not os.path.exists(output_dir):
             continue
@@ -189,12 +192,13 @@ def get_latest_output_file(file_type, since_time):
             if file_type == "video" and not is_video:
                 continue
         
-        # Check if created after since_time
-        mtime = os.path.getmtime(fpath)
-        if mtime > since_time:
-            return f
+            # Check if created after since_time
+            mtime = os.path.getmtime(fpath)
+            if mtime > since_time and mtime > latest_mtime:
+                latest_file = f
+                latest_mtime = mtime
     
-    return None
+    return latest_file
 
 def process_image_job(job):
     """Process an image generation job"""
