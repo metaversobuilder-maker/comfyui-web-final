@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import WebSocket
 from fastapi.responses import FileResponse
@@ -10,8 +10,8 @@ from datetime import datetime
 import enum
 from pydantic import BaseModel
 
-# Database
-DATABASE_URL = "sqlite+aiosqlite:///./comfyui.db"
+# Database - PostgreSQL
+DATABASE_URL = "postgresql+asyncpg://postgres:comfyui123@localhost:5432/comfyui"
 
 async_engine = create_async_engine(DATABASE_URL, echo=False)
 AsyncSessionLocal = async_sessionmaker(async_engine, class_=AsyncSession, expire_on_commit=False)
@@ -39,6 +39,7 @@ class Job(Base):
     video_path = Column(String(500), nullable=True)
     progress = Column(Float, default=0.0)
     error_message = Column(Text, nullable=True)
+    model = Column(String(50), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     completed_at = Column(DateTime, nullable=True)
 
@@ -49,6 +50,7 @@ class Job(Base):
             "status": self.status,
             "payload": self.payload,
             "prompt": self.prompt,
+            "model": self.model,
             "image_path": self.image_path,
             "video_path": self.video_path,
             "progress": self.progress,
@@ -62,13 +64,14 @@ class JobCreate(BaseModel):
     type: str = "image"
     payload: str = ""
     prompt: str = ""
+    model: str | None = None
 
 class JobResponse(BaseModel):
     id: int
     type: str
     status: str
     payload: str | None
-    prompt: str | None
+    model: str | None
     image_path: str | None
     video_path: str | None
     progress: float
@@ -84,6 +87,7 @@ class JobResponse(BaseModel):
             status=job.status,
             payload=job.payload,
             prompt=job.prompt,
+            model=job.model,
             image_path=job.image_path,
             video_path=job.video_path,
             progress=job.progress or 0.0,
@@ -108,11 +112,62 @@ ws_connections = []
 @app.post("/api/jobs", response_model=JobResponse)
 async def create_job(job_data: JobCreate):
     async with AsyncSessionLocal() as db:
-        job = Job(type=job_data.type, payload=job_data.payload or "", prompt=job_data.prompt, status="pending")
+        job = Job(
+            type=job_data.type, 
+            payload=job_data.payload or "", 
+            prompt=job_data.prompt, 
+            model=job_data.model,
+            status="pending"
+        )
         db.add(job)
         await db.commit()
         await db.refresh(job)
         return JobResponse.from_job(job)
+
+@app.get("/api/status")
+async def get_status():
+    """Get system status - API, Worker, ComfyUI"""
+    status = {
+        "api": "ok",
+        "worker": "unknown",
+        "comfyui": "unknown",
+        "postgres": "unknown"
+    }
+    
+    # Check PostgreSQL
+    try:
+        import asyncpg
+        conn = await asyncpg.connect('postgresql://postgres:comfyui123@localhost:5432/comfyui')
+        await conn.close()
+        status["postgres"] = "ok"
+    except:
+        status["postgres"] = "error"
+    
+    # Check ComfyUI
+    try:
+        resp = requests.get(f"{COMFY_URL}/queue", timeout=5)
+        status["comfyui"] = "ok"
+    except:
+        status["comfyui"] = "error"
+    
+    # Check worker (if it processed jobs recently)
+    try:
+        resp = requests.get(f"{API_URL}/api/jobs?page=1&limit=1")
+        if resp.ok:
+            data = resp.json()
+            if data.get("items"):
+                latest = data["items"][0]
+                # If latest job is pending/processing, worker might be stuck
+                if latest["status"] in ["pending", "processing"]:
+                    status["worker"] = "busy"
+                else:
+                    status["worker"] = "ok"
+            else:
+                status["worker"] = "idle"
+    except:
+        status["worker"] = "error"
+    
+    return status
 
 @app.get("/api/jobs")
 async def list_jobs(page: int = 1, limit: int = 20):
@@ -130,23 +185,41 @@ async def get_job(job_id: int):
         if not job: raise HTTPException(status_code=404, detail="Job not found")
         return JobResponse.from_job(job)
 
-@app.patch("/api/jobs/{job_id}")
-async def update_job(job_id: int, status: str = None, image_path: str = None, video_path: str = None, error_message: str = None, progress: float = None):
+@app.delete("/api/jobs/{job_id}")
+async def delete_job(job_id: int):
     async with AsyncSessionLocal() as db:
         result = await db.execute(select(Job).filter(Job.id == job_id))
         job = result.scalar_one_or_none()
-        if not job: raise HTTPException(status_code=404, detail="Job not found")
+        if not job:
+            raise HTTPException(status_code=404, detail="Job not found")
+        await db.delete(job)
+        await db.commit()
+        return {"message": "Job deleted", "id": job_id}
+
+@app.patch("/api/jobs/{job_id}")
+async def update_job(job_id: int, request: Request):
+    """Update job - accepts JSON body"""
+    try:
+        data = await request.json()
+    except Exception:
+        data = {}
+    
+    async with AsyncSessionLocal() as db:
+        result = await db.execute(select(Job).filter(Job.id == job_id))
+        job = result.scalar_one_or_none()
+        if not job:
+            raise HTTPException(status_code=404, detail="Job not found")
         
-        if status:
-            job.status = status
-        if image_path is not None:
-            job.image_path = image_path
-        if video_path is not None:
-            job.video_path = video_path
-        if error_message is not None:
-            job.error_message = error_message
-        if progress is not None:
-            job.progress = progress
+        if "status" in data and data["status"]:
+            job.status = data["status"]
+        if "image_path" in data:
+            job.image_path = data["image_path"]
+        if "video_path" in data:
+            job.video_path = data["video_path"]
+        if "error_message" in data:
+            job.error_message = data["error_message"]
+        if "progress" in data:
+            job.progress = data["progress"]
             
         await db.commit()
         await db.refresh(job)

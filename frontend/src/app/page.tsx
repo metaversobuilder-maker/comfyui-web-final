@@ -1,313 +1,114 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
-import { Job, Stats, generateImage, generateVideo, getJobs, getStats, connectWebSocket } from "@/lib/api";
-import JobCard from "@/components/JobCard";
-import StatsBar from "@/components/StatsBar";
-import ImageModal from "@/components/ImageModal";
-import VideoForm from "@/components/VideoForm";
+import { useState, useEffect } from "react";
+import { getStats, getJobs } from "@/lib/api";
 
 export default function Home() {
-  const [jobs, setJobs] = useState<Job[]>([]);
-  const [stats, setStats] = useState<Stats>({ totalImages: 0, totalVideos: 0, pendingJobs: 0 });
-  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
-  const [imagePrompt, setImagePrompt] = useState("");
-  const [loadingImage, setLoadingImage] = useState(false);
-  const [loadingVideo, setLoadingVideo] = useState(false);
-  const [wsError, setWsError] = useState(false);
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [filter, setFilter] = useState<"all" | "image" | "video">("all");
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-
-  const fetchData = useCallback(async () => {
-    try {
-      const [jobsResponse, statsData] = await Promise.all([getJobs(page), getStats()]);
-      const jobsArray = Array.isArray(jobsResponse) ? jobsResponse : (jobsResponse.items || []);
-      setJobs(jobsArray);
-      setStats(statsData);
-      setWsError(false);
-      // @ts-ignore
-      if (jobsResponse.pages) setTotalPages(jobsResponse.pages);
-    } catch (err) {
-      console.error("Failed to fetch data:", err);
-    }
-  }, [page]);
+  const [stats, setStats] = useState({ totalImages: 0, totalVideos: 0, pendingJobs: 0 });
+  const [recentJobs, setRecentJobs] = useState<any[]>([]);
 
   useEffect(() => {
     fetchData();
-    const interval = setInterval(fetchData, 5000);
-    return () => clearInterval(interval);
-  }, [fetchData]);
+  }, []);
 
-  useEffect(() => {
-    let ws: WebSocket | null = null;
-
-    const initWs = () => {
-      ws = connectWebSocket(
-        (data: Job) => {
-          setJobs((prev) => {
-            const idx = prev.findIndex((j) => j.id === data.id);
-            if (idx >= 0) {
-              const updated = [...prev];
-              updated[idx] = data;
-              return updated;
-            }
-            return [data, ...prev];
-          });
-          fetchData();
-        },
-        () => {
-          setWsError(true);
-        }
-      );
-    };
-
-    initWs();
-
-    return () => {
-      ws?.close();
-    };
-  }, [fetchData]);
-
-  const handleGenerateImage = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!imagePrompt.trim() || loadingImage) return;
-
-    setLoadingImage(true);
+  const fetchData = async () => {
     try {
-      await generateImage(imagePrompt);
-      setImagePrompt("");
-      await fetchData();
-    } catch (err) {
-      console.error("Failed to generate image:", err);
-      alert("Error al generar imagen");
-    } finally {
-      setLoadingImage(false);
+      const [statsData, jobsData] = await Promise.all([getStats(), getJobs()]);
+      setStats(statsData);
+      setRecentJobs(jobsData.items.slice(0, 6));
+    } catch (e) {
+      console.error("Error:", e);
     }
   };
-
-  const handleGenerateVideo = async (prompt: string, imageId: string) => {
-    setLoadingVideo(true);
-    try {
-      await generateVideo(prompt, imageId);
-      await fetchData();
-    } catch (err) {
-      console.error("Failed to generate video:", err);
-      alert("Error al generar video");
-    } finally {
-      setLoadingVideo(false);
-    }
-  };
-
-  const filteredJobs = jobs.filter(job => {
-    if (filter === "all") return true;
-    return job.type === filter;
-  });
-
-  const pendingJobs = jobs.filter(j => j.status === "pending" || j.status === "processing");
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
-      <div className="max-w-7xl mx-auto p-6 space-y-6">
+      <div className="max-w-6xl mx-auto p-6 space-y-8">
         
         {/* Header */}
-        <div className="flex items-center justify-between flex-wrap gap-4">
-          <h1 className="text-4xl font-bold flex items-center gap-3">
-            <span className="text-5xl">🎨</span>
-            ComfyUI Web
+        <div className="text-center py-8">
+          <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent mb-4">
+            🎨 ComfyUI Web
           </h1>
-          <div className="flex items-center gap-3">
-            {wsError && (
-              <span className="px-3 py-1 bg-yellow-500/20 text-yellow-400 rounded-full text-sm flex items-center gap-2">
-                ⚠️ WebSocket
-              </span>
-            )}
-            {pendingJobs.length > 0 && (
-              <span className="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-sm">
-                🔄 {pendingJobs.length} en cola
-              </span>
-            )}
-          </div>
+          <p className="text-xl text-gray-400">Tu panel de herramientas de IA</p>
         </div>
 
         {/* Stats */}
-        <StatsBar stats={stats} />
-
-        {/* Forms */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Generate Image */}
-          <div className="bg-gray-800/50 backdrop-blur rounded-2xl p-6 border border-gray-700/50">
-            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-              🖼️ Generar Imagen
-            </h2>
-            <form onSubmit={handleGenerateImage} className="space-y-4">
-              <textarea
-                value={imagePrompt}
-                onChange={(e) => setImagePrompt(e.target.value)}
-                placeholder="Describe la imagen que quieres generar..."
-                className="w-full px-4 py-3 bg-gray-900/50 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-                rows={3}
-              />
-              <button
-                type="submit"
-                disabled={!imagePrompt.trim() || loadingImage}
-                className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 disabled:from-gray-600 disabled:to-gray-700 text-white font-medium rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg"
-              >
-                {loadingImage ? (
-                  <>
-                    <span className="animate-spin">⏳</span>
-                    Generando...
-                  </>
-                ) : (
-                  <>
-                    ✨ Generar Imagen
-                  </>
-                )}
-              </button>
-            </form>
+        <div className="grid grid-cols-3 gap-6">
+          <div className="bg-gray-800/50 backdrop-blur rounded-2xl p-6 border border-gray-700/50 text-center">
+            <div className="text-4xl mb-2">🖼️</div>
+            <div className="text-3xl font-bold">{stats.totalImages}</div>
+            <div className="text-gray-400">Imágenes</div>
           </div>
-
-          {/* Generate Video */}
-          <div className="bg-gray-800/50 backdrop-blur rounded-2xl p-6 border border-gray-700/50">
-            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-              🎬 Generar Video
-            </h2>
-            <VideoForm
-              images={jobs}
-              onSubmit={handleGenerateVideo}
-              disabled={loadingVideo}
-            />
+          <div className="bg-gray-800/50 backdrop-blur rounded-2xl p-6 border border-gray-700/50 text-center">
+            <div className="text-4xl mb-2">🎬</div>
+            <div className="text-3xl font-bold">{stats.totalVideos}</div>
+            <div className="text-gray-400">Videos</div>
+          </div>
+          <div className="bg-gray-800/50 backdrop-blur rounded-2xl p-6 border border-gray-700/50 text-center">
+            <div className="text-4xl mb-2">⏳</div>
+            <div className="text-3xl font-bold">{stats.pendingJobs}</div>
+            <div className="text-gray-400">Pendientes</div>
           </div>
         </div>
 
-        {/* Jobs Section */}
-        <div className="bg-gray-800/50 backdrop-blur rounded-2xl p-6 border border-gray-700/50">
-          {/* Controls */}
-          <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
-            <h2 className="text-xl font-semibold flex items-center gap-2">
-              📋 Historial
-              <span className="text-sm font-normal text-gray-400">
-                ({filteredJobs.length} jobs)
-              </span>
-            </h2>
+        {/* Tools Grid */}
+        <div>
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+            <span>🛠️</span> Herramientas
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             
-            <div className="flex items-center gap-3">
-              {/* Filter */}
-              <div className="flex bg-gray-900/50 rounded-lg p-1">
-                {(["all", "image", "video"] as const).map((f) => (
-                  <button
-                    key={f}
-                    onClick={() => setFilter(f)}
-                    className={`px-3 py-1 rounded-md text-sm transition-colors ${
-                      filter === f 
-                        ? "bg-blue-600 text-white" 
-                        : "text-gray-400 hover:text-white"
-                    }`}
-                  >
-                    {f === "all" ? "Todos" : f === "image" ? "🖼️" : "🎬"}
-                  </button>
-                ))}
-              </div>
+            {/* Prompts Tool */}
+            <a href="/prompts" className="group bg-gray-800/50 backdrop-blur rounded-2xl p-6 border border-gray-700/50 hover:border-blue-500 transition-all hover:scale-105">
+              <div className="text-5xl mb-4">🎯</div>
+              <h3 className="text-xl font-bold mb-2 group-hover:text-blue-400">Prompts</h3>
+              <p className="text-gray-400">Genera imágenes y videos con modelos de IA</p>
+            </a>
 
-              {/* View Toggle */}
-              <div className="flex bg-gray-900/50 rounded-lg p-1">
-                <button
-                  onClick={() => setViewMode("grid")}
-                  className={`px-3 py-1 rounded-md transition-colors ${viewMode === "grid" ? "bg-blue-600 text-white" : "text-gray-400 hover:text-white"}`}
-                >
-                  ▦
-                </button>
-                <button
-                  onClick={() => setViewMode("list")}
-                  className={`px-3 py-1 rounded-md transition-colors ${viewMode === "list" ? "bg-blue-600 text-white" : "text-gray-400 hover:text-white"}`}
-                >
-                  ☰
-                </button>
-              </div>
+            {/* Coming Soon */}
+            <div className="bg-gray-800/30 backdrop-blur rounded-2xl p-6 border border-gray-700/30 opacity-50">
+              <div className="text-5xl mb-4">🔄</div>
+              <h3 className="text-xl font-bold mb-2">Workflows</h3>
+              <p className="text-gray-500">Próximamente...</p>
+            </div>
+
+            {/* Coming Soon */}
+            <div className="bg-gray-800/30 backdrop-blur rounded-2xl p-6 border border-gray-700/30 opacity-50">
+              <div className="text-5xl mb-4">📊</div>
+              <h3 className="text-xl font-bold mb-2">Estadísticas</h3>
+              <p className="text-gray-500">Próximamente...</p>
+            </div>
+
+          </div>
+        </div>
+
+        {/* Recent Activity */}
+        {recentJobs.length > 0 && (
+          <div>
+            <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+              <span>📋</span> Actividad Reciente
+            </h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+              {recentJobs.map(job => (
+                <a key={job.id} href={`/prompts`} className="bg-gray-800/50 rounded-xl p-4 border border-gray-700 hover:border-blue-500 transition-all">
+                  <div className="text-2xl mb-2">{job.type === "image" ? "🖼️" : "🎬"}</div>
+                  <div className="text-sm text-gray-400 truncate">{job.prompt?.substring(0, 30)}...</div>
+                  <div className={`text-xs mt-2 ${job.status === "completed" ? "text-green-400" : job.status === "failed" ? "text-red-400" : "text-yellow-400"}`}>
+                    {job.status === "completed" ? "✅" : job.status === "failed" ? "❌" : "⏳"} {job.status}
+                  </div>
+                </a>
+              ))}
             </div>
           </div>
-          
-          {filteredJobs.length === 0 ? (
-            <div className="text-center py-16 text-gray-500">
-              <p className="text-6xl mb-4">📭</p>
-              <p className="text-xl">No hay jobs</p>
-              <p className="text-sm mt-2">Genera una imagen o video para comenzar</p>
-            </div>
-          ) : viewMode === "grid" ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3">
-              {filteredJobs.map((job) => (
-                <JobCard
-                  key={job.id}
-                  job={job}
-                  onClick={setSelectedJob}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="space-y-2">
-              {filteredJobs.map((job) => (
-                <button
-                  key={job.id}
-                  onClick={() => setSelectedJob(job)}
-                  className="w-full flex items-center gap-4 p-3 bg-gray-900/50 hover:bg-gray-700/50 rounded-xl transition-colors text-left"
-                >
-                  <div className="w-12 h-12 rounded-lg bg-gray-700 flex items-center justify-center text-xl flex-shrink-0 overflow-hidden">
-                    {job.image_path ? (
-                      <img 
-                        src={`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/images/${job.image_path}`}
-                        alt=""
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      job.type === "image" ? "🖼️" : "🎬"
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm truncate">{job.prompt || "Sin prompt"}</p>
-                    <p className="text-xs text-gray-400">
-                      {new Date(job.created_at).toLocaleString()}
-                    </p>
-                  </div>
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    job.status === "completed" ? "bg-green-500/20 text-green-400" :
-                    job.status === "processing" ? "bg-blue-500/20 text-blue-400" :
-                    job.status === "pending" ? "bg-yellow-500/20 text-yellow-400" :
-                    "bg-red-500/20 text-red-400"
-                  }`}>
-                    {job.status}
-                  </span>
-                </button>
-              ))}
-            </div>
-          )}
-          
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2 mt-6 pt-4 border-t border-gray-700">
-              <button
-                onClick={() => setPage(p => Math.max(1, p - 1))}
-                disabled={page === 1}
-                className="px-3 py-1 bg-gray-700 hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg text-sm"
-              >
-                ◀
-              </button>
-              <span className="px-3 py-1 text-sm text-gray-400">
-                Página {page} / {totalPages}
-              </span>
-              <button
-                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                disabled={page === totalPages}
-                className="px-3 py-1 bg-gray-700 hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg text-sm"
-              >
-                ▶
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
+        )}
 
-      <ImageModal job={selectedJob} onClose={() => setSelectedJob(null)} />
+        {/* Footer */}
+        <div className="text-center text-gray-500 py-8">
+          <p>ComfyUI Web v1.0 • Powered by OpenClaw</p>
+        </div>
+
+      </div>
     </div>
   );
 }

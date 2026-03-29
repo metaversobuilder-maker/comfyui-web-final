@@ -21,11 +21,12 @@ export default function ImageModal({ job, onClose }: ImageModalProps) {
       >
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-700">
-          <div>
-            <h2 className="text-lg font-semibold text-white">
+          <div className="flex-1">
+            <h2 className="text-lg font-semibold text-white flex items-center gap-2">
               {job.type === "image" ? "🖼️ Imagen" : "🎬 Video"}
+              {job.model && <span className="text-sm px-2 py-0.5 bg-purple-500/20 text-purple-400 rounded">📦 {job.model}</span>}
             </h2>
-            <p className="text-sm text-gray-400 truncate max-w-md">{job.prompt}</p>
+            <p className="text-sm text-gray-300 mt-1 font-mono bg-gray-800 px-2 py-1 rounded">{job.prompt}</p>
           </div>
           <button
             onClick={onClose}

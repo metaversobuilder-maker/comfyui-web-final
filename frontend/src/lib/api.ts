@@ -1,4 +1,6 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const API_BASE = typeof window !== 'undefined' 
+  ? `${window.location.protocol}//${window.location.host.replace(':3000', ':8000')}`
+  : (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000");
 
 export interface Job {
   id: number;
@@ -6,6 +8,7 @@ export interface Job {
   status: "pending" | "processing" | "completed" | "failed";
   payload?: string;
   prompt?: string;
+  model?: string;
   image_path?: string;
   video_path?: string;
   progress?: number;
@@ -20,14 +23,15 @@ export interface Stats {
   pendingJobs: number;
 }
 
-export async function generateImage(prompt: string): Promise<Job> {
+export async function generateImage(prompt: string, model: string = "zimage_lora"): Promise<Job> {
   const res = await fetch(`${API_BASE}/api/jobs`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ 
       type: "image",
       prompt: prompt,
-      payload: JSON.stringify({ prompt })
+      model: model,
+      payload: JSON.stringify({ prompt, model })
     }),
   });
   if (!res.ok) throw new Error("Failed to generate image");
@@ -36,7 +40,8 @@ export async function generateImage(prompt: string): Promise<Job> {
 
 export async function generateVideo(
   prompt: string,
-  imageFilename: string
+  imageFilename: string,
+  model: string = "openart"
 ): Promise<Job> {
   const res = await fetch(`${API_BASE}/api/jobs`, {
     method: "POST",
@@ -44,7 +49,8 @@ export async function generateVideo(
     body: JSON.stringify({
       type: "video",
       prompt: prompt,
-      payload: JSON.stringify({ prompt, image: imageFilename })
+      model: model,
+      payload: JSON.stringify({ prompt, image: imageFilename, model })
     }),
   });
   if (!res.ok) throw new Error("Failed to generate video");
@@ -67,6 +73,13 @@ export async function getJob(jobId: number): Promise<Job> {
   const res = await fetch(`${API_BASE}/api/jobs/${jobId}`, { cache: "no-store" });
   if (!res.ok) throw new Error("Failed to fetch job");
   return res.json();
+}
+
+export async function deleteJob(jobId: number): Promise<void> {
+  const res = await fetch(`${API_BASE}/api/jobs/${jobId}`, {
+    method: "DELETE",
+  });
+  if (!res.ok) throw new Error("Failed to delete job");
 }
 
 export function connectWebSocket(

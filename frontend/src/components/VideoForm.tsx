@@ -5,13 +5,19 @@ import { Job, generateVideo } from "@/lib/api";
 
 interface VideoFormProps {
   images: Job[];
-  onSubmit: (prompt: string, imageId: string) => Promise<void>;
+  onSubmit: (prompt: string, imageId: string, model?: string) => Promise<void>;
   disabled?: boolean;
 }
+
+export const VIDEO_MODELS = [
+  { id: "openart", name: "OpenArt", icon: "🎨" },
+  { id: "wan2.2_smoothmix", name: "Wan 2.2 SmoothMix", icon: "✨" },
+];
 
 export default function VideoForm({ images, onSubmit, disabled }: VideoFormProps) {
   const [prompt, setPrompt] = useState("");
   const [selectedImage, setSelectedImage] = useState<string>("");
+  const [selectedModel, setSelectedModel] = useState<string>("wan2.2_smoothmix");
   const [loading, setLoading] = useState(false);
 
   const imageJobs = images.filter((j) => j.type === "image" && j.status === "completed");
@@ -22,7 +28,7 @@ export default function VideoForm({ images, onSubmit, disabled }: VideoFormProps
 
     setLoading(true);
     try {
-      await onSubmit(prompt, selectedImage);
+      await onSubmit(prompt, selectedImage, selectedModel);
       setPrompt("");
       setSelectedImage("");
     } finally {
@@ -44,10 +50,10 @@ export default function VideoForm({ images, onSubmit, disabled }: VideoFormProps
               <button
                 key={img.id}
                 type="button"
-                onClick={() => setSelectedImage(String(img.id))}
+                onClick={() => setSelectedImage(img.image_path || "")}
                 disabled={disabled}
                 className={`relative w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
-                  selectedImage === String(img.id)
+                  selectedImage === img.image_path
                     ? "border-blue-500 ring-2 ring-blue-500/50"
                     : "border-gray-700 hover:border-gray-500"
                 } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
@@ -66,6 +72,31 @@ export default function VideoForm({ images, onSubmit, disabled }: VideoFormProps
               </button>
             ))
           )}
+        </div>
+      </div>
+
+      {/* Model Selector */}
+      <div>
+        <label className="block text-sm font-medium text-gray-300 mb-2">
+          Modelo de Video
+        </label>
+        <div className="flex gap-2">
+          {VIDEO_MODELS.map((model) => (
+            <button
+              key={model.id}
+              type="button"
+              onClick={() => setSelectedModel(model.id)}
+              disabled={disabled}
+              className={`flex-1 py-2 px-3 rounded-lg border-2 transition-all flex items-center justify-center gap-2 ${
+                selectedModel === model.id
+                  ? "border-purple-500 bg-purple-500/20 text-white"
+                  : "border-gray-700 bg-gray-800 text-gray-400 hover:border-gray-500"
+              } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+            >
+              <span>{model.icon}</span>
+              <span className="text-sm font-medium">{model.name}</span>
+            </button>
+          ))}
         </div>
       </div>
 

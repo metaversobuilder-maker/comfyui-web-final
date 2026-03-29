@@ -1,15 +1,35 @@
 "use client";
 
-import { Job } from "@/lib/api";
+import { Job, deleteJob } from "@/lib/api";
+import { useState } from "react";
 
 interface JobCardProps {
   job: Job;
   onClick: (job: Job) => void;
+  onDelete?: (jobId: number) => void;
 }
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
-export default function JobCard({ job, onClick }: JobCardProps) {
+export default function JobCard({ job, onClick, onDelete }: JobCardProps) {
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!confirm("¿Eliminar este job de la cola?")) return;
+    
+    setIsDeleting(true);
+    try {
+      await deleteJob(job.id);
+      onDelete?.(job.id);
+    } catch (err) {
+      console.error("Failed to delete job:", err);
+      alert("Error al eliminar job");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   const statusColors = {
     pending: "bg-yellow-500",
     processing: "bg-blue-500 animate-pulse",
@@ -34,9 +54,9 @@ export default function JobCard({ job, onClick }: JobCardProps) {
       : null;
 
   return (
-    <button
+    <div
       onClick={() => onClick(job)}
-      className="relative flex-shrink-0 w-24 h-24 rounded-xl overflow-hidden bg-gray-700 border-2 border-gray-600 hover:border-blue-500 hover:scale-105 transition-all group"
+      className="relative flex-shrink-0 w-24 h-24 rounded-xl overflow-hidden bg-gray-700 border-2 border-gray-600 hover:border-blue-500 hover:scale-105 transition-all group cursor-pointer"
     >
       {imageUrl ? (
         <img
@@ -63,6 +83,20 @@ export default function JobCard({ job, onClick }: JobCardProps) {
       <div className="absolute top-1 left-1 bg-black/50 px-1.5 py-0.5 rounded text-xs">
         {typeIcon}
       </div>
-    </button>
+      
+      {/* Delete button - appears on hover */}
+      <div 
+        className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity"
+        onClick={handleDelete}
+      >
+        <button 
+          disabled={isDeleting}
+          className="w-6 h-6 bg-red-600 hover:bg-red-500 rounded-full flex items-center justify-center text-xs"
+          title="Eliminar"
+        >
+          {isDeleting ? "⏳" : "✕"}
+        </button>
+      </div>
+    </div>
   );
 }
